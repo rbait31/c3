@@ -65,14 +65,9 @@
         }
 
         .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
             background: var(--theme-toggle-bg);
             border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -80,13 +75,17 @@
             font-size: 1.5rem;
             color: #ffffff;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
         }
 
         .theme-toggle:hover {
             background: var(--theme-toggle-hover);
-            transform: scale(1.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--button-shadow);
+        }
+
+        .theme-toggle:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px var(--button-shadow);
         }
 
         .calculator {
@@ -177,9 +176,6 @@
     </style>
 </head>
 <body>
-    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Переключить тему">
-        <span id="themeIcon">🌙</span>
-    </button>
     <div class="calculator">
         <div class="display" id="display">0</div>
         <div class="buttons">
@@ -201,10 +197,13 @@
             <button onclick="appendNumber('1')">1</button>
             <button onclick="appendNumber('2')">2</button>
             <button onclick="appendNumber('3')">3</button>
-            <button class="equals" onclick="calculate()" rowspan="2">=</button>
+            <button class="equals" onclick="calculate()">=</button>
             
             <button class="zero" onclick="appendNumber('0')">0</button>
             <button onclick="appendDecimal()">.</button>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Переключить тему">
+                <span id="themeIcon">🌙</span>
+            </button>
         </div>
     </div>
 
