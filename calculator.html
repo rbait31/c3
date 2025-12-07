@@ -214,29 +214,18 @@
 
         .history-header {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 2px solid var(--history-border);
-        }
-
-        .history-header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            gap: 10px;
         }
 
         .history-title {
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--history-text);
-        }
-
-        .history-position-toggle {
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .history-position-btn {
@@ -249,7 +238,7 @@
             transition: all 0.2s;
             font-size: 0.9rem;
             font-weight: 600;
-            width: 100%;
+            white-space: nowrap;
         }
 
         .history-position-btn:hover {
@@ -370,13 +359,9 @@
 
         <div class="history">
             <div class="history-header">
-                <div class="history-header-top">
-                    <div class="history-title">Журнал операций</div>
-                    <button class="history-clear" onclick="clearHistory()">Очистить</button>
-                </div>
-                <div class="history-position-toggle">
-                    <button class="history-position-btn" id="historyPositionBtn" onclick="toggleHistoryPosition()"></button>
-                </div>
+                <div class="history-title">Журнал операций</div>
+                <button class="history-position-btn" id="historyPositionBtn" onclick="toggleHistoryPosition()"></button>
+                <button class="history-clear" onclick="clearHistory()">Очистить</button>
             </div>
             <div class="history-list" id="historyList">
                 <div class="history-empty">Журнал пуст</div>
