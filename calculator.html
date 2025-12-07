@@ -5,6 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Калькулятор</title>
     <style>
+        :root {
+            --bg-gradient-start: #667eea;
+            --bg-gradient-end: #764ba2;
+            --calculator-bg: #ffffff;
+            --calculator-shadow: rgba(0, 0, 0, 0.3);
+            --display-bg: #1a1a1a;
+            --display-color: #ffffff;
+            --button-bg: #f0f0f0;
+            --button-hover: #e0e0e0;
+            --button-color: #333;
+            --button-shadow: rgba(0, 0, 0, 0.2);
+            --operator-bg: #667eea;
+            --operator-hover: #5568d3;
+            --equals-bg: #764ba2;
+            --equals-hover: #653a8a;
+            --clear-bg: #ff6b6b;
+            --clear-hover: #ee5a5a;
+            --theme-toggle-bg: rgba(255, 255, 255, 0.2);
+            --theme-toggle-hover: rgba(255, 255, 255, 0.3);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient-start: #1a1a2e;
+            --bg-gradient-end: #16213e;
+            --calculator-bg: #2d2d44;
+            --calculator-shadow: rgba(0, 0, 0, 0.5);
+            --display-bg: #1a1a1a;
+            --display-color: #ffffff;
+            --button-bg: #3d3d5c;
+            --button-hover: #4d4d6c;
+            --button-color: #ffffff;
+            --button-shadow: rgba(0, 0, 0, 0.4);
+            --operator-bg: #667eea;
+            --operator-hover: #5568d3;
+            --equals-bg: #764ba2;
+            --equals-hover: #653a8a;
+            --clear-bg: #ff6b6b;
+            --clear-hover: #ee5a5a;
+            --theme-toggle-bg: rgba(255, 255, 255, 0.1);
+            --theme-toggle-hover: rgba(255, 255, 255, 0.2);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,22 +59,49 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
             padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--theme-toggle-bg);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #ffffff;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            background: var(--theme-toggle-hover);
+            transform: scale(1.1);
         }
 
         .calculator {
-            background: #ffffff;
+            background: var(--calculator-bg);
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px var(--calculator-shadow);
             padding: 30px;
             max-width: 400px;
             width: 100%;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
 
         .display {
-            background: #1a1a1a;
-            color: #ffffff;
+            background: var(--display-bg);
+            color: var(--display-color);
             font-size: 2.5rem;
             padding: 20px;
             text-align: right;
@@ -53,7 +122,7 @@
         }
 
         button {
-            background: #f0f0f0;
+            background: var(--button-bg);
             border: none;
             border-radius: 10px;
             font-size: 1.5rem;
@@ -61,45 +130,45 @@
             cursor: pointer;
             transition: all 0.2s;
             font-weight: 600;
-            color: #333;
+            color: var(--button-color);
         }
 
         button:hover {
-            background: #e0e0e0;
+            background: var(--button-hover);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px var(--button-shadow);
         }
 
         button:active {
             transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 5px var(--button-shadow);
         }
 
         .operator {
-            background: #667eea;
+            background: var(--operator-bg);
             color: #ffffff;
         }
 
         .operator:hover {
-            background: #5568d3;
+            background: var(--operator-hover);
         }
 
         .equals {
-            background: #764ba2;
+            background: var(--equals-bg);
             color: #ffffff;
         }
 
         .equals:hover {
-            background: #653a8a;
+            background: var(--equals-hover);
         }
 
         .clear {
-            background: #ff6b6b;
+            background: var(--clear-bg);
             color: #ffffff;
         }
 
         .clear:hover {
-            background: #ee5a5a;
+            background: var(--clear-hover);
         }
 
         .zero {
@@ -108,6 +177,9 @@
     </style>
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Переключить тему">
+        <span id="themeIcon">🌙</span>
+    </button>
     <div class="calculator">
         <div class="display" id="display">0</div>
         <div class="buttons">
@@ -137,6 +209,34 @@
     </div>
 
     <script>
+        // Инициализация темы
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const themeIcon = document.getElementById('themeIcon');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Инициализация темы при загрузке страницы
+        initTheme();
+
         let display = document.getElementById('display');
         let currentInput = '0';
         let shouldResetDisplay = false;
