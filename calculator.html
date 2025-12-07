@@ -85,6 +85,10 @@
             justify-content: center;
         }
 
+        .container.history-left {
+            flex-direction: row-reverse;
+        }
+
         .theme-toggle {
             background: var(--theme-toggle-bg);
             border: none;
@@ -210,17 +214,66 @@
 
         .history-header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 15px;
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 2px solid var(--history-border);
+        }
+
+        .history-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .history-title {
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--history-text);
+        }
+
+        .history-position-toggle {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .history-position-toggle label {
+            font-size: 0.9rem;
+            color: var(--history-text);
+            cursor: pointer;
+        }
+
+        .history-position-toggle input[type="radio"] {
+            display: none;
+        }
+
+        .history-position-toggle .toggle-option {
+            background: var(--button-bg);
+            color: var(--button-color);
+            border: 2px solid var(--history-border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .history-position-toggle input[type="radio"]:checked + .toggle-option {
+            background: var(--operator-bg);
+            color: #ffffff;
+            border-color: var(--operator-bg);
+        }
+
+        .history-position-toggle .toggle-option:hover {
+            background: var(--button-hover);
+        }
+
+        .history-position-toggle input[type="radio"]:checked + .toggle-option:hover {
+            background: var(--operator-hover);
         }
 
         .history-clear {
@@ -330,8 +383,20 @@
 
         <div class="history">
             <div class="history-header">
-                <div class="history-title">Журнал операций</div>
-                <button class="history-clear" onclick="clearHistory()">Очистить</button>
+                <div class="history-header-top">
+                    <div class="history-title">Журнал операций</div>
+                    <button class="history-clear" onclick="clearHistory()">Очистить</button>
+                </div>
+                <div class="history-position-toggle">
+                    <label>
+                        <input type="radio" name="historyPosition" value="left" onchange="toggleHistoryPosition('left')">
+                        <span class="toggle-option">Слева</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="historyPosition" value="right" onchange="toggleHistoryPosition('right')" checked>
+                        <span class="toggle-option">Справа</span>
+                    </label>
+                </div>
             </div>
             <div class="history-list" id="historyList">
                 <div class="history-empty">Журнал пуст</div>
@@ -367,6 +432,36 @@
 
         // Инициализация темы при загрузке страницы
         initTheme();
+
+        // Инициализация позиции журнала
+        function initHistoryPosition() {
+            const savedPosition = localStorage.getItem('historyPosition') || 'right';
+            const container = document.querySelector('.container');
+            const radioButtons = document.querySelectorAll('input[name="historyPosition"]');
+            
+            if (savedPosition === 'left') {
+                container.classList.add('history-left');
+                radioButtons[0].checked = true;
+            } else {
+                container.classList.remove('history-left');
+                radioButtons[1].checked = true;
+            }
+        }
+
+        function toggleHistoryPosition(position) {
+            const container = document.querySelector('.container');
+            
+            if (position === 'left') {
+                container.classList.add('history-left');
+            } else {
+                container.classList.remove('history-left');
+            }
+            
+            localStorage.setItem('historyPosition', position);
+        }
+
+        // Инициализация позиции журнала при загрузке страницы
+        initHistoryPosition();
 
         let display = document.getElementById('display');
         let currentInput = '0';
