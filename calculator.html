@@ -235,45 +235,32 @@
 
         .history-position-toggle {
             display: flex;
-            gap: 10px;
-            align-items: center;
             justify-content: center;
+            align-items: center;
         }
 
-        .history-position-toggle label {
-            font-size: 0.9rem;
-            color: var(--history-text);
-            cursor: pointer;
-        }
-
-        .history-position-toggle input[type="radio"] {
-            display: none;
-        }
-
-        .history-position-toggle .toggle-option {
+        .history-position-btn {
             background: var(--button-bg);
             color: var(--button-color);
             border: 2px solid var(--history-border);
             border-radius: 8px;
-            padding: 6px 12px;
+            padding: 8px 16px;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 600;
+            width: 100%;
         }
 
-        .history-position-toggle input[type="radio"]:checked + .toggle-option {
-            background: var(--operator-bg);
-            color: #ffffff;
-            border-color: var(--operator-bg);
-        }
-
-        .history-position-toggle .toggle-option:hover {
+        .history-position-btn:hover {
             background: var(--button-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--button-shadow);
         }
 
-        .history-position-toggle input[type="radio"]:checked + .toggle-option:hover {
-            background: var(--operator-hover);
+        .history-position-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px var(--button-shadow);
         }
 
         .history-clear {
@@ -388,14 +375,7 @@
                     <button class="history-clear" onclick="clearHistory()">Очистить</button>
                 </div>
                 <div class="history-position-toggle">
-                    <label>
-                        <input type="radio" name="historyPosition" value="left" onchange="toggleHistoryPosition('left')">
-                        <span class="toggle-option">Слева</span>
-                    </label>
-                    <label>
-                        <input type="radio" name="historyPosition" value="right" onchange="toggleHistoryPosition('right')" checked>
-                        <span class="toggle-option">Справа</span>
-                    </label>
+                    <button class="history-position-btn" id="historyPositionBtn" onclick="toggleHistoryPosition()"></button>
                 </div>
             </div>
             <div class="history-list" id="historyList">
@@ -437,27 +417,31 @@
         function initHistoryPosition() {
             const savedPosition = localStorage.getItem('historyPosition') || 'right';
             const container = document.querySelector('.container');
-            const radioButtons = document.querySelectorAll('input[name="historyPosition"]');
+            const positionBtn = document.getElementById('historyPositionBtn');
             
             if (savedPosition === 'left') {
                 container.classList.add('history-left');
-                radioButtons[0].checked = true;
+                positionBtn.textContent = 'Выводить справа';
             } else {
                 container.classList.remove('history-left');
-                radioButtons[1].checked = true;
+                positionBtn.textContent = 'Выводить слева';
             }
         }
 
-        function toggleHistoryPosition(position) {
+        function toggleHistoryPosition() {
             const container = document.querySelector('.container');
+            const positionBtn = document.getElementById('historyPositionBtn');
+            const isLeft = container.classList.contains('history-left');
             
-            if (position === 'left') {
-                container.classList.add('history-left');
-            } else {
+            if (isLeft) {
                 container.classList.remove('history-left');
+                positionBtn.textContent = 'Выводить слева';
+                localStorage.setItem('historyPosition', 'right');
+            } else {
+                container.classList.add('history-left');
+                positionBtn.textContent = 'Выводить справа';
+                localStorage.setItem('historyPosition', 'left');
             }
-            
-            localStorage.setItem('historyPosition', position);
         }
 
         // Инициализация позиции журнала при загрузке страницы
